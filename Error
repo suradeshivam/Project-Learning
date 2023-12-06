@@ -1,0 +1,6 @@
+Errors
+
+* axios error (giving html as response when using axios)
+https://stackoverflow.com/questions/19313016/catch-all-route-except-for-login
+https://github.com/axios/axios/issues/889
+do  change the vite.config.js file
