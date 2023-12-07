@@ -1,38 +1,33 @@
 // defining schema and creating a model using mongoose
 
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+const mongoose = require('mongoose');
 
-const ChatPage = () => {
-  const [chats, setChats] = useState([]);
+// Connect to MongoDB (make sure MongoDB is running)
+mongoose.connect('mongodb://localhost:27017/your-database-name', { useNewUrlParser: true, useUnifiedTopology: true });
 
-  const fetchChats = async () => {
-    try {
-      const { data } = await axios.get('/api/chats');
-      setChats(data);
-      // No need to log chats here
-    } catch (e) {
-      console.log(e);
-    }
-  };
+// Define a Mongoose Schema
+const userSchema = new mongoose.Schema({
+  username: { type: String, required: true, unique: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  created_at: { type: Date, default: Date.now }
+});
 
-  useEffect(() => {
-    fetchChats();
-  }, []);
+// Define a Mongoose Model based on the schema
+const User = mongoose.model('User', userSchema);
 
-  useEffect(() => {
-    console.log('Chats after state update:', chats); // Log the updated state
-  }, [chats]);
+// Create a new user instance
+const newUser = new User({
+  username: 'john_doe',
+  email: 'john@example.com',
+  password: 'password123'
+});
 
-  return (
-    <div>
-      <div>
-        {chats.map((chat) => (
-          <div key={chat._id}>{chat.name}</div>
-        ))}
-      </div>
-    </div>
-  );
-};
-
-export default ChatPage;
+// Save the new user to the database
+newUser.save()
+  .then(user => {
+    console.log('User saved to the database:', user);
+  })
+  .catch(error => {
+    console.error('Error saving user:', error);
+  });
